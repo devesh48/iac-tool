@@ -1,2 +1,2 @@
 # iac-tool
-Tool for automated deployment in Jenkins and other server
+Acc Tool for cloud migration

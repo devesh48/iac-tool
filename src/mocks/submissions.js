@@ -14,7 +14,7 @@ export const submissions = [
     {
         "pattern": "Databricks",
         "projectInfo": {
-            "gitRepoURL": "https://github.com/devesh48/iac-tool",
+            "gitRepoURL": "https://github.com/google/leveldb",
             "lob": "BI",
             "owner1": "Jahnavi",
             "owner2": "Devesh",
@@ -38,7 +38,7 @@ export const submissions = [
     {
         "pattern": "Databricks",
         "projectInfo": {
-            "gitRepoURL": "https://github.com/devesh48/iac-tool",
+            "gitRepoURL": "https://github.com/apache/superset",
             "lob": "BI",
             "owner1": "Jahnavi",
             "owner2": "Devesh",

@@ -4,7 +4,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import NavBar from './NavBar';
 import DisplayContent from './DisplayContent'
 
-const darkTheme = createTheme({
+const accIACTheme = createTheme({
     palette: {
         primary: {
             main: '#460074',
@@ -15,7 +15,7 @@ const darkTheme = createTheme({
 export default function Dashboard() {
     return (
         <Stack spacing={2} sx={{ flexGrow: 1 }}>
-            <ThemeProvider theme={darkTheme}>
+            <ThemeProvider theme={accIACTheme}>
                 <NavBar />
                 <DisplayContent />
             </ThemeProvider>

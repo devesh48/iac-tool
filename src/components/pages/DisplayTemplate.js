@@ -2,6 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -15,24 +16,36 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import DialogTitle from '@mui/material/DialogTitle';
 
+import CloseIcon from '@mui/icons-material/Close';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 
-import { fetchJSON } from '../../configs/utils';
+import { fetchFormFieldsForTemplate, getInputType, insertToArray } from '../../configs/utils';
 import { addFieldTypes } from '../../configs/constants';
 
+var _ = require('lodash');
+
 export default function DisplayTemplate(props) {
-    const { template, isNewSubmission, isNonExistingPattern } = props;
-    const [config, setConfig] = React.useState('');
+    const { pattern, template, isNewSubmission, isNonExistingPattern } = props;
+    const [config, setConfig] = React.useState([]);
     const [open, setOpen] = React.useState(false);
     const [fieldType, setFieldType] = React.useState('Text Box');
+    const [fieldName, setFieldName] = React.useState('');
+    const [fieldNumber, setFieldNumber] = React.useState(0);
     const [required, setRequired] = React.useState(true);
 
+
     React.useEffect(() => {
-        let json = fetchJSON(template);
-        setConfig(json);
-    }, [template]);
+        let array = [];
+        if ((typeof pattern !== 'undefined' && typeof template !== 'undefined') && (pattern !== '' && template !== '')) {
+            array = fetchFormFieldsForTemplate(pattern, template);
+        }
+        console.log(array)
+        setConfig(array);
+    }, [pattern, template]);
 
     const handleDialogClickOpen = () => {
         setOpen(true);
@@ -50,14 +63,74 @@ export default function DisplayTemplate(props) {
         setFieldType(event.target.value);
     };
 
+    const handleFieldNameChange = (event) => {
+        setFieldName(event.target.value);
+    };
+    const handleFieldNumberChange = (event) => {
+        setFieldNumber(event.target.value);
+    };
+
+    const handleAddNewField = () => {
+        setOpen(false);
+        /*
+        console.log('fieldType:' + fieldType)
+        console.log('fieldName:' + fieldName);
+        console.log('required:' + required);
+        */
+        let type = getInputType(fieldType);
+        let obj = {};
+        obj['type'] = type;
+        obj['name'] = _.camelCase(fieldName);
+        obj['label'] = fieldName;
+        obj['required'] = required ? 'yes' : 'no';
+        if (type === 'select')
+            obj['values'] = [];
+
+        console.log(obj);
+        //update the config
+        let existingConfig = config;
+        existingConfig.push(obj);
+        setConfig(existingConfig);
+        //set default values
+        setFieldName('');
+        setFieldType('Text Box');
+        setFieldNumber(0);
+        setRequired(true);
+    }
+
+    const handleAddSameField = (field) => {
+        //console.log("Field to be added");
+        //console.log(field);
+        let existingConfig = config;
+        let index = existingConfig.findIndex((obj) => obj.name === field.name);
+        //console.log('index:' + index);
+        if (index > -1) {
+            existingConfig = insertToArray(existingConfig, index, field);
+        }
+        setConfig(existingConfig);
+    }
+
+    const handleRemoveSameField = (field) => {
+        //console.log("Field to be added");
+        //console.log(field);
+        let existingConfig = config;
+        let index = existingConfig.findIndex((obj) => obj.name === field.name);
+        console.log('index:' + index);
+        if (index > -1) {
+            existingConfig.splice(index, 1);
+        }
+        //console.log(existingConfig);
+        setConfig(existingConfig);
+    }
+
     return (
-        <Box sx={{ m: 1 }}>
-            {(config === '' && typeof config.templateDetails === 'undefined') ? (
+        <Box sx={{ m: 2 }}>
+            {(typeof config === 'undefined' && config.length === 0) ? (
                 <React.Fragment>
                 </React.Fragment>
             ) : (
                 <React.Fragment>
-                    {config.templateDetails.map((field) => {
+                    {config.map((field) => {
                         return (
                             <React.Fragment>
                                 <Box sx={{ flexGrow: 1, m: 2 }}>
@@ -70,20 +143,22 @@ export default function DisplayTemplate(props) {
                                             </Box>
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <TextField
-                                                name={field.name}
-                                                variant="outlined"
-                                                size="small"
-                                                sx={{ maxWidth: 300 }}
-                                            />
+                                            <DisplayField field={field} />
                                         </Grid>
                                         {(typeof field.required !== 'undefined') && (field.required.toUpperCase() === 'YES') ? (
                                             <React.Fragment>
                                                 <Grid item xs={1}>
-                                                    <AddBoxIcon fontSize="large" color="success" />
+                                                    <AddBoxIcon
+                                                        fontSize="large"
+                                                        color="success"
+                                                        onClick={() => handleAddSameField(field)}
+                                                    />
                                                 </Grid>
                                                 <Grid item xs={1}>
-                                                    <IndeterminateCheckBoxIcon fontSize="large" sx={{ color: '#CC0000' }} />
+                                                    <IndeterminateCheckBoxIcon
+                                                        fontSize="large"
+                                                        sx={{ color: '#CC0000' }}
+                                                        onClick={() => handleRemoveSameField(field)} />
                                                 </Grid>
                                             </React.Fragment>) : (
                                             <React.Fragment>
@@ -146,6 +221,19 @@ export default function DisplayTemplate(props) {
                 maxWidth='sm'
                 fullWidth
             >
+                <DialogTitle>
+                    <IconButton
+                        aria-label="close"
+                        onClick={handleDialogClose}
+                        sx={{
+                            position: 'absolute',
+                            right: 8,
+                            top: 8,
+                        }}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
                 <DialogContent>
                     <FormControl component="fieldset">
                         <FormLabel component="legend">{'Select a field type to add'}</FormLabel>
@@ -165,6 +253,8 @@ export default function DisplayTemplate(props) {
                         label="Enter Label Name"
                         variant="outlined"
                         size="small"
+                        value={fieldName}
+                        onChange={handleFieldNameChange}
                         sx={{ maxWidth: 300 }}
                     />
                     {(fieldType === 'Drop Down') ? (
@@ -174,6 +264,8 @@ export default function DisplayTemplate(props) {
                                 label="Enter number of values"
                                 variant="outlined"
                                 size="small"
+                                value={fieldNumber}
+                                onChange={handleFieldNumberChange}
                                 sx={{ maxWidth: 300, ml: 2 }}
                             />
                         </React.Fragment>
@@ -199,16 +291,7 @@ export default function DisplayTemplate(props) {
                         size="small"
                         variant="contained"
                         color="primary"
-                        onClick={handleDialogClose}
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        sx={{ maxHeight: 40, m: 1 }}
-                        size="small"
-                        variant="contained"
-                        color="primary"
-                        onClick={handleDialogClose}
+                        onClick={handleAddNewField}
                     >
                         Add
                     </Button>
@@ -216,4 +299,54 @@ export default function DisplayTemplate(props) {
             </Dialog>
         </Box>
     );
+}
+
+function DisplayField(props) {
+    const { field } = props;
+    switch (field.type) {
+        case 'textbox':
+            return (
+                <React.Fragment>
+                    <TextField
+                        name={field.name}
+                        variant="outlined"
+                        size="small"
+                        sx={{ maxWidth: 300 }}
+                    />
+                </React.Fragment>
+            );
+        case 'textarea':
+            return (
+                <React.Fragment>
+                    <TextField
+                        name={field.name}
+                        variant="outlined"
+                        size="small"
+                        multiline
+                        rows={2}
+                    />
+                </React.Fragment>
+            );
+        case 'select':
+            return (
+                <React.Fragment>
+                    <TextField
+                        variant="outlined"
+                        size="small"
+                        select
+                        sx={{ maxWidth: 300 }}
+                        fullWidth>
+                        {field.values.length > 0 && field.values.map((option, index) => (
+                            <MenuItem key={index}>
+                                {option.value}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </React.Fragment>
+            );
+        default: return (
+            <React.Fragment>
+            </React.Fragment>
+        );
+    }
 }

@@ -1,11 +1,11 @@
-export const patterns = [
+export const defaultPatterns = [
     'Databricks',
     'AI/ML',
     'Website',
     'Mulesoft'
 ];
 
-export const templates = [
+export const dataBrickTemplates = [
     'Project Information',
     'AWS Cloud Watch Event Rule',
     'AWS SFN State Machine',
@@ -16,4 +16,15 @@ export const addFieldTypes = [
     'Text Box',
     'Text Area',
     'Drop Down'
+]
+
+export const addPatternOptions = [
+    'Load from existing pattern',
+    'Create a non existing pattern'
+]
+
+export const stages = [
+    'Choose Pattern',
+    'Choose Template',
+    'Fill form'
 ]

@@ -5,10 +5,9 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
-import NewPattern from './pages/NewPattern';
-import NewSubmission from './pages/NewSubmission';
 import Home from './pages/Home';
 import ShowPattern from './pages/ShowPattern';
+import NewPattern2 from './pages/NewPattern2';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -64,10 +63,10 @@ export default function DisplayContent() {
                 <Home />
             </TabPanel >
             <TabPanel value={value} index={1}>
-                <ShowPattern isNewSubmission={true} />
+                <ShowPattern isNewSubmission={true} isNonExistingPattern={false} />
             </TabPanel>
             <TabPanel value={value} index={2}>
-                <ShowPattern isNewSubmission={false} />
+                <NewPattern2 />
             </TabPanel>
         </Box >
     );

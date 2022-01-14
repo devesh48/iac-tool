@@ -46,5 +46,17 @@ export const submissions = [
             "dataClass": "Internal",
             "info": "sample description"
         }
-    }
+    },
+    {
+        "pattern": "Databricks",
+        "projectInfo": {
+            "gitRepoURL": "https://github.com/devesh48/iac-tool",
+            "lob": "BI",
+            "owner1": "Devesh",
+            "owner2": "Rasika",
+            "account": "Analytics",
+            "dataClass": "Internal",
+            "info": ""
+        }
+    },
 ]

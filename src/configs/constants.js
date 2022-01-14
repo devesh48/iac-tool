@@ -11,3 +11,9 @@ export const templates = [
     'AWS SFN State Machine',
     'AWS SNS Topic Subscription'
 ];
+
+export const addFieldTypes = [
+    'Text Box',
+    'Text Area',
+    'Drop Down'
+]

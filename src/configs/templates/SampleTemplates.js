@@ -5,17 +5,20 @@ export const projectInfoTemplate = {
         {
             "type": "textbox",
             "name": "gitRepoURL",
-            "label": "Git Repository URL"
+            "label": "Git Repository URL",
+            "required": "yes"
         },
         {
             "type": "textbox",
             "name": "lob",
-            "label": "LOB"
+            "label": "LOB",
+            "required": "yes"
         },
         {
             "type": "textbox",
             "name": "owner1",
-            "label": "Owner 1"
+            "label": "Owner 1",
+            "required": "yes"
         },
         {
             "type": "textbox",
@@ -37,7 +40,8 @@ export const cloudWatchTemplate = {
         {
             "type": "textbox",
             "name": "name",
-            "label": "Name"
+            "label": "Name",
+            "required": "yes"
         },
         {
             "type": "textbox",
@@ -47,7 +51,8 @@ export const cloudWatchTemplate = {
         {
             "type": "textbox",
             "name": "eventPattern",
-            "label": "Event Pattern"
+            "label": "Event Pattern",
+            "required": "yes"
         }
     ]
 }
@@ -59,7 +64,8 @@ export const stateMachineTemplate = {
         {
             "type": "textbox",
             "name": "name",
-            "label": "Name"
+            "label": "Name",
+            "required": "yes"
         },
         {
             "type": "textbox",
@@ -69,7 +75,8 @@ export const stateMachineTemplate = {
         {
             "type": "textbox",
             "name": "eventPattern",
-            "label": "Event Pattern"
+            "label": "Event Pattern",
+            "required": "yes"
         }
     ]
 }
@@ -81,17 +88,20 @@ export const snsTopicTemplate = {
         {
             "type": "textbox",
             "name": "name",
-            "label": "Name"
+            "label": "Name",
+            "required": "yes"
         },
         {
             "type": "textbox",
             "name": "protocol",
-            "label": "Protocol"
+            "label": "Protocol",
+            "required": "yes"
         },
         {
             "type": "textbox",
             "name": "endPoint",
-            "label": "End Point"
+            "label": "End Point",
+            "required": "yes"
         }
     ]
 }

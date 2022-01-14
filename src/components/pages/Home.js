@@ -7,6 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 
 import { submissions } from '../../mocks/submissions';
 
@@ -24,17 +25,23 @@ function TableComponent() {
                 <TableHead>
                     <TableRow>
                         <TableCell key={'num'} sx={{ borderColor: "#460074" }}>
-                            #
+                            <Typography variant="overline" align="center" color="primary">
+                                #
+                            </Typography>
                         </TableCell>
                         {columns.map((column, index) => {
                             return (
                                 <TableCell key={index} sx={{ borderColor: "#460074" }}>
-                                    {column}
+                                    <Typography variant="overline" align="center" color="primary">
+                                        {column}
+                                    </Typography>
                                 </TableCell>
                             );
                         })}
                         <TableCell key={'status'} sx={{ borderColor: "#460074" }}>
-                            Status
+                            <Typography variant="overline" align="center" color="primary">
+                                Status
+                            </Typography>
                         </TableCell>
                     </TableRow>
                 </TableHead>
@@ -45,22 +52,39 @@ function TableComponent() {
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
                             <TableCell>
-                                {index + 1}
+                                <Typography variant="overline" align="center">
+                                    {index + 1}
+                                </Typography>
                             </TableCell>
                             <TableCell component="th" scope="row">
-                                {submission.projectInfo.gitRepoURL}
+                                <Typography variant="overline" align="center">
+                                    {submission.projectInfo.gitRepoURL}
+                                </Typography>
                             </TableCell>
                             <TableCell>
-                                {submission.projectInfo.owner1}
+                                <Typography variant="overline" align="center">
+                                    {submission.projectInfo.owner1}
+                                </Typography>
                             </TableCell>
                             <TableCell>
-                                {submission.projectInfo.account}
+                                <Typography variant="overline" align="center">
+                                    {submission.projectInfo.account}
+                                </Typography>
                             </TableCell>
                             <TableCell>
-                                {submission.projectInfo.dataClass}
+                                <Typography variant="overline" align="center">
+                                    {submission.projectInfo.dataClass}
+                                </Typography>
                             </TableCell>
                             <TableCell>
-                                Saved
+                                <Button
+                                    sx={{ maxHeight: 40 }}
+                                    size="small"
+                                    variant="contained"
+                                    color="success"
+                                >
+                                    saved
+                                </Button>
                             </TableCell>
                         </TableRow>);
                     })}
@@ -75,8 +99,8 @@ function TableComponent() {
 export default function Home() {
     return (
         <React.Fragment>
-            <Typography variant="h6" gutterBottom component="div">
-                Submission List
+            <Typography variant="subtitle1" align="center" color="primary">
+                SUBMISSIONS LIST
             </Typography>
             <TableComponent />
         </React.Fragment>

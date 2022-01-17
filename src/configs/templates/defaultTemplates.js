@@ -1,141 +1,180 @@
-export const defaultTemplates = [
+export const defaultTemplate = [
     {
         "patternName": "Databricks",
-        "templateName": "Project Information",
         "templateDetails": [
             {
-                "type": "textbox",
-                "name": "gitRepoURL",
-                "label": "Git Repository URL",
-                "required": "yes"
-            },
-            {
-                "type": "textbox",
-                "name": "lob",
-                "label": "LOB",
-                "required": "yes"
-            },
-            {
-                "type": "textbox",
-                "name": "owner1",
-                "label": "Owner 1",
-                "required": "yes"
-            },
-            {
-                "type": "textbox",
-                "name": "owner2",
-                "label": "Owner 2"
-            },
-            {
-                "type": "textarea",
-                "name": "info",
-                "label": "Info"
-            },
-            {
-                "type": "select",
-                "name": "account",
-                "label": "Account",
-                "values": [
+                "templateName": "Project Information",
+                "templateInputDetails": [
                     {
-                        "value": "DA1"
+                        "type": "textbox",
+                        "name": "gitRepoURL",
+                        "label": "Git Repository URL",
+                        "required": "yes",
+                        "sequenceNo": 1
                     },
                     {
-                        "value": "DA2"
+                        "type": "textbox",
+                        "name": "lob",
+                        "label": "LOB",
+                        "required": "yes",
+                        "sequenceNo": 1
                     },
                     {
-                        "value": "Ingest"
+                        "type": "textbox",
+                        "name": "owner1",
+                        "label": "Owner",
+                        "required": "yes",
+                        "sequenceNo": 0
                     },
                     {
-                        "value": "Analytics"
+                        "type": "textbox",
+                        "name": "owner2",
+                        "label": "Owner",
+                        "required": "yes",
+                        "sequenceNo": 1
+                    },
+                    {
+                        "type": "textarea",
+                        "name": "info",
+                        "label": "Info",
+                        "sequenceNo": 1
+                    },
+                    {
+                        "type": "select",
+                        "name": "account",
+                        "label": "Account",
+                        "sequenceNo": 1,
+                        "values": [
+                            {
+                                "value": "DA1"
+                            },
+                            {
+                                "value": "DA2"
+                            },
+                            {
+                                "value": "Ingest"
+                            },
+                            {
+                                "value": "Analytics"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "select",
+                        "name": "dataClass",
+                        "label": "Data Classification",
+                        "values": [
+                            {
+                                "value": "Internal"
+                            },
+                            {
+                                "value": "Confidential"
+                            },
+                            {
+                                "value": "Public"
+                            }
+                        ]
                     }
                 ]
             },
             {
-                "type": "select",
-                "name": "dataClass",
-                "label": "Data Classification",
-                "values": [
+                "templateName": "AWS Cloud Watch Event Rule",
+                "templateInputDetails": [
                     {
-                        "value": "Internal"
+                        "type": "textbox",
+                        "name": "name",
+                        "label": "Name",
+                        "required": "yes",
+                        "sequenceNo": 1
                     },
                     {
-                        "value": "Confidential"
+                        "type": "textbox",
+                        "name": "description",
+                        "label": "Description",
+                        "sequenceNo": 1
                     },
                     {
-                        "value": "Public"
+                        "type": "textbox",
+                        "name": "eventPattern",
+                        "label": "Event Pattern",
+                        "required": "yes",
+                        "sequenceNo": 1
+                    },
+                    {
+                        "type": "textbox",
+                        "name": "gitRepoURL",
+                        "label": "Git Repository URL",
+                        "required": "yes",
+                        "sequenceNo": 1
+                    }
+                ]
+            },
+            {
+                "templateName": "AWS SFN State Machine",
+                "templateInputDetails": [
+                    {
+                        "type": "textbox",
+                        "name": "name",
+                        "label": "Name",
+                        "required": "yes",
+                        "sequenceNo": 1
+                    },
+                    {
+                        "type": "textbox",
+                        "name": "roleARN",
+                        "label": "Role ARN",
+                        "sequenceNo": 1
+                    },
+                    {
+                        "type": "textbox",
+                        "name": "eventPattern",
+                        "label": "Event Pattern",
+                        "required": "yes",
+                        "sequenceNo": 1
+                    }
+                ]
+            },
+            {
+                "templateName": "AWS SNS Topic Subscription",
+                "templateInputDetails": [
+                    {
+                        "type": "textbox",
+                        "name": "name",
+                        "label": "Name",
+                        "required": "yes",
+                        "sequenceNo": 1
+                    },
+                    {
+                        "type": "textbox",
+                        "name": "protocol",
+                        "label": "Protocol",
+                        "required": "yes",
+                        "sequenceNo": 1
+                    },
+                    {
+                        "type": "textbox",
+                        "name": "endPoint",
+                        "label": "End Point",
+                        "required": "yes",
+                        "sequenceNo": 1
                     }
                 ]
             }
         ]
     },
     {
-        "patternName": "Databricks",
-        "templateName": "AWS Cloud Watch Event Rule",
+        "patternName": "AI/ML",
         "templateDetails": [
-            {
-                "type": "textbox",
-                "name": "name",
-                "label": "Name",
-                "required": "yes"
-            },
-            {
-                "type": "textbox",
-                "name": "description",
-                "label": "Description"
-            },
-            {
-                "type": "textbox",
-                "name": "eventPattern",
-                "label": "Event Pattern",
-                "required": "yes"
-            }
         ]
     },
     {
-        "patternName": "Databricks",
-        "templateName": "AWS SFN State Machine",
+        "patternName": "Website",
         "templateDetails": [
-            {
-                "type": "textbox",
-                "name": "name",
-                "label": "Name",
-                "required": "yes"
-            },
-            {
-                "type": "textbox",
-                "name": "roleARN",
-                "label": "Role ARN"
-            },
-            {
-                "type": "textbox",
-                "name": "eventPattern",
-                "label": "Event Pattern",
-                "required": "yes"
-            }
         ]
     },
     {
-        "patternName": "Databricks",
-        "templateName": "AWS SNS Topic Subscription",
+        "patternName": "Mulesoft",
         "templateDetails": [
-            {
-                "type": "textbox",
-                "name": "name",
-                "label": "Name",
-                "required": "yes"
-            },
-            {
-                "type": "textbox",
-                "name": "protocol",
-                "label": "Protocol",
-                "required": "yes"
-            },
-            {
-                "type": "textbox",
-                "name": "endPoint",
-                "label": "End Point",
-                "required": "yes"
-            }
         ]
     }
 ]

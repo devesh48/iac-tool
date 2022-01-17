@@ -1,4 +1,4 @@
-import { defaultTemplates } from './templates/defaultTemplates';
+import { defaultTemplate } from './templates/defaultTemplates';
 
 export const fetchFormFieldsForTemplate = (pattern, templateName) => {
     /*
@@ -8,8 +8,8 @@ export const fetchFormFieldsForTemplate = (pattern, templateName) => {
     console.log('========');
     */
     let newArray = [];
-    if (defaultTemplates && defaultTemplates.length > 0) {
-        defaultTemplates.forEach(template => {
+    if (defaultTemplate && defaultTemplate.length > 0) {
+        defaultTemplate.forEach(template => {
             //check if pattern is the same
             /*
             console.log('========');
@@ -24,7 +24,21 @@ export const fetchFormFieldsForTemplate = (pattern, templateName) => {
     } else {
         return newArray;
     }
+}
 
+export const getTemplatesForPattern = (pattern) => {
+    let newArray = [];
+    if (defaultTemplate && defaultTemplate.length > 0) {
+        defaultTemplate.forEach(obj => {
+            //check if pattern is the same
+            if ((obj.patternName === pattern)) {
+                newArray = obj.templateDetails;
+            }
+        });
+        return newArray;
+    } else {
+        return newArray;
+    }
 }
 
 export const getInputType = (label) => {
@@ -41,3 +55,27 @@ export const getInputType = (label) => {
 export const insertToArray = (arr, index, newItem) => [
     ...arr.slice(0, index), newItem, ...arr.slice(index)
 ]
+
+export const getInitialValue = (pattern, temp) => {
+    let initObj = {
+        patternName: pattern,
+        templateDetails: []
+    };
+
+    temp.forEach(subForm => {
+        let objOrig = {
+            templateName: subForm.templateName,
+            templateInputDetails: []
+        };
+
+        let inputDetails = subForm.templateInputDetails;
+        inputDetails.forEach(field => {
+            field.value = '';
+            objOrig.templateInputDetails.push(field);
+        });
+        initObj.templateDetails.push(objOrig);
+    });
+    return initObj;
+
+}
+

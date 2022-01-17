@@ -25,6 +25,10 @@ export const addPatternOptions = [
 
 export const stages = [
     'Choose Pattern',
-    'Choose Template',
-    'Fill form'
+    'Fill Form'
 ]
+
+export const newPatternSteps = [
+    'Select Type',
+    'Choose Pattern',
+    'Fill Form'];

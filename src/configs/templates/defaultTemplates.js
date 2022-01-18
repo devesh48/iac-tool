@@ -24,13 +24,6 @@ export const defaultTemplate = [
                         "name": "owner1",
                         "label": "Owner",
                         "required": "yes",
-                        "sequenceNo": 0
-                    },
-                    {
-                        "type": "textbox",
-                        "name": "owner2",
-                        "label": "Owner",
-                        "required": "yes",
                         "sequenceNo": 1
                     },
                     {

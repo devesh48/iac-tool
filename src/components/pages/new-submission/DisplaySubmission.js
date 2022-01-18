@@ -15,14 +15,15 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import Alert from '@mui/material/Alert';
 
 import { stages } from '../../../configs/constants';
-import { getTemplatesForPattern, getInitialValue, getDefaultPatterns } from '../../../configs/utils';
+import { getTemplatesForPattern, getInitialFormValue, getDefaultPatterns } from '../../../configs/utils';
 import DisplayTemplate from './DisplayTemplate';
 import axios from 'axios';
 
-export default function DisplaySubmission() {
+export default function DisplaySubmission(props) {
+
+    const { config } = props;
 
     const [pattern, setPattern] = React.useState('');
     const [defaultPatterns, setDefaultPatterns] = React.useState([]);
@@ -30,7 +31,6 @@ export default function DisplaySubmission() {
     const [activeStep, setActiveStep] = React.useState(0);
     const [page, setPage] = React.useState(1);
     const [dialogOpen, setDialogOpen] = React.useState(false);
-    const [formDetails, setFormDetails] = React.useState({});
     const [fieldChanges, setFieldChanges] = React.useState('');
     const [newSubmissionSaved, setNewSubmissionSaved] = React.useState(false);
     const [newPatternSaved, setNewPatternSaved] = React.useState(false);
@@ -40,9 +40,8 @@ export default function DisplaySubmission() {
     };
 
     const handleChangePattern = (pat) => {
-        let temp = getTemplatesForPattern(pat);
-        let initValue = getInitialValue(pat, temp);
-        setFormDetails(initValue);
+        let temp = getTemplatesForPattern(config, pat);
+        let initValue = getInitialFormValue(pat, temp);
         setInitialFormValue(initValue);
         setPattern(pat);
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -64,15 +63,15 @@ export default function DisplaySubmission() {
         //event.preventDefault();
         console.log(values);
         if (fieldsAddedCount > 0 || fieldsRemovedCount > 0) {
-            let text = '';
+            let count = 0;
             if (fieldsAddedCount > 0) {
-                text += fieldsAddedCount;
-                text += ' New field(s) were added \n';
+                count = count + fieldsAddedCount;
             }
             if (fieldsRemovedCount > 0) {
-                text += fieldsAddedCount;
-                text += ' New field(s) were removed \n'
+                count = count + fieldsAddedCount;
             }
+            let text = count;
+            text += ' field(s) were modified';
             setInitialFormValue(values);
             setFieldChanges(text);
             setDialogOpen(true);
@@ -82,13 +81,14 @@ export default function DisplaySubmission() {
         axios.post('https://iac-tool.herokuapp.com/triggerDeployment', values)
             .then(res => {
                 console.log("Post request sent successfully for new submission");
-                console.log(res);
-                setNewSubmissionSaved(true);
+                if (res.status === "200" && res.data) {
+                    console.log(res.data);
+                    setNewSubmissionSaved(true);
+                }
             })
             .catch(err => {
                 console.log("Failed to send post request");
                 console.log(err);
-                setNewSubmissionSaved(false);
             })
     }
 
@@ -96,21 +96,22 @@ export default function DisplaySubmission() {
         axios.post('https://iac-tool.herokuapp.com/updateConfig', initialFormValue)
             .then(res => {
                 console.log("Post request sent successfully for saving new pattern");
-                console.log(res);
-                setNewPatternSaved(true);
+                if (res.data.length > 0) {
+                    console.log(res.data);
+                    setNewPatternSaved(true);
+                }
             })
             .catch(err => {
                 console.log("Failed to send post request");
                 console.log(err);
-                setNewPatternSaved(false);
             });
         setDialogOpen(false);
     }
 
     React.useEffect(() => {
-        let patterns = getDefaultPatterns();
+        let patterns = getDefaultPatterns(config);
         setDefaultPatterns(patterns);
-    }, [pattern])
+    }, [config]);
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -251,12 +252,8 @@ export default function DisplaySubmission() {
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
                         <Typography variant="subtitle1" sx={{ m: 1 }}>
-                            You have made the below changes :
-                        </Typography>
-                        <Typography variant="overline" sx={{ m: 1 }}>
                             {fieldChanges}
                         </Typography>
-                        <br />
                         <br />
                         <Typography variant="subtitle1" sx={{ m: 1 }}>
                             Do you want to save it as a new pattern ?

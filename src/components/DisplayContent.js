@@ -63,7 +63,7 @@ export default function DisplayContent() {
                 <Dashboard />
             </TabPanel >
             <TabPanel value={value} index={1}>
-                <DisplaySubmission isNewSubmission={true} isNonExistingPattern={false} />
+                <DisplaySubmission />
             </TabPanel>
             <TabPanel value={value} index={2}>
                 <NewPattern />

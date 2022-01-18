@@ -10,26 +10,40 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardActionArea from '@mui/material/CardActionArea';
 import Pagination from '@mui/material/Pagination';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Alert from '@mui/material/Alert';
 
-import { defaultPatterns, stages } from '../../../configs/constants';
-import { getTemplatesForPattern, getInitialValue } from '../../../configs/utils';
+import { stages } from '../../../configs/constants';
+import { getTemplatesForPattern, getInitialValue, getDefaultPatterns } from '../../../configs/utils';
 import DisplayTemplate from './DisplayTemplate';
 import axios from 'axios';
 
-export default function DisplaySubmission(props) {
-    const { isNewSubmission } = props;
-    //console.log('In DisplaySubmission, isNewSubmission:' + isNewSubmission + ',isNonExistingPattern:' + isNonExistingPattern);
+export default function DisplaySubmission() {
 
     const [pattern, setPattern] = React.useState('');
+    const [defaultPatterns, setDefaultPatterns] = React.useState([]);
+    const [initialFormValue, setInitialFormValue] = React.useState({});
     const [activeStep, setActiveStep] = React.useState(0);
     const [page, setPage] = React.useState(1);
-
+    const [dialogOpen, setDialogOpen] = React.useState(false);
     const [formDetails, setFormDetails] = React.useState({});
+    const [fieldChanges, setFieldChanges] = React.useState('');
+    const [newSubmissionSaved, setNewSubmissionSaved] = React.useState(false);
+    const [newPatternSaved, setNewPatternSaved] = React.useState(false);
+
+    const handleDialogClose = () => {
+        setDialogOpen(false);
+    };
 
     const handleChangePattern = (pat) => {
         let temp = getTemplatesForPattern(pat);
         let initValue = getInitialValue(pat, temp);
         setFormDetails(initValue);
+        setInitialFormValue(initValue);
         setPattern(pat);
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
     };
@@ -46,21 +60,57 @@ export default function DisplaySubmission(props) {
         setPage(value);
     };
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        console.log(formDetails);
+    const handleSubmit = (values, fieldsAddedCount, fieldsRemovedCount) => {
+        //event.preventDefault();
+        console.log(values);
+        if (fieldsAddedCount > 0 || fieldsRemovedCount > 0) {
+            let text = '';
+            if (fieldsAddedCount > 0) {
+                text += fieldsAddedCount;
+                text += ' New field(s) were added \n';
+            }
+            if (fieldsRemovedCount > 0) {
+                text += fieldsAddedCount;
+                text += ' New field(s) were removed \n'
+            }
+            setInitialFormValue(values);
+            setFieldChanges(text);
+            setDialogOpen(true);
+        }
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
 
-        axios.post('http://localhost:8080/submissions', formDetails)
+        axios.post('https://iac-tool.herokuapp.com/triggerDeployment', values)
             .then(res => {
-                console.log("Post request sent successfully");
-                console.log(res);                
+                console.log("Post request sent successfully for new submission");
+                console.log(res);
+                setNewSubmissionSaved(true);
             })
             .catch(err => {
                 console.log("Failed to send post request");
-                console.log(err);               
+                console.log(err);
+                setNewSubmissionSaved(false);
             })
     }
+
+    const handleSubmitPattern = () => {
+        axios.post('https://iac-tool.herokuapp.com/updateConfig', initialFormValue)
+            .then(res => {
+                console.log("Post request sent successfully for saving new pattern");
+                console.log(res);
+                setNewPatternSaved(true);
+            })
+            .catch(err => {
+                console.log("Failed to send post request");
+                console.log(err);
+                setNewPatternSaved(false);
+            });
+        setDialogOpen(false);
+    }
+
+    React.useEffect(() => {
+        let patterns = getDefaultPatterns();
+        setDefaultPatterns(patterns);
+    }, [pattern])
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -81,20 +131,42 @@ export default function DisplaySubmission(props) {
             </Stepper>
             {activeStep === stages.length ? (
                 <React.Fragment>
-                    <br />
-                    <Typography variant="overline" color="primary">
-                        {isNewSubmission ? 'New Submission is saved' : 'New Pattern is saved'}
-                    </Typography>
-                    <br />
-                    <br />
-                    <Button
-                        onClick={handleReset}
-                        sx={{ maxHeight: 40 }}
-                        size="small"
-                        variant="contained"
-                        color="primary">
-                        {isNewSubmission ? 'Create another submission ?' : 'Create Another Pattern ?'}
-                    </Button>
+                    <center>
+                        <br />
+                        {newSubmissionSaved ? (
+                            <React.Fragment>
+                                <Typography variant="overline" color="primary">
+                                    New Submission is saved
+                                </Typography>
+                            </React.Fragment>
+                        ) : (
+                            <React.Fragment>
+                            </React.Fragment>
+                        )}
+                        <br />
+                        {newPatternSaved ? (
+                            <React.Fragment>
+                                <br />
+                                <Typography variant="overline" color="primary">
+                                    New Pattern is saved
+                                </Typography>
+                                <br />
+                            </React.Fragment>
+                        ) : (
+                            <React.Fragment>
+                            </React.Fragment>
+                        )}
+                        <br />
+                        <Button
+                            onClick={handleReset}
+                            sx={{ maxHeight: 40, m: 1 }}
+                            size="small"
+                            variant="contained"
+                            color="primary">
+                            Create another submission ?
+                        </Button>
+                    </center>
+
                 </React.Fragment>
             ) : (
                 <React.Fragment>
@@ -139,31 +211,7 @@ export default function DisplaySubmission(props) {
                                             Available Templates for {pattern}
                                         </Typography>
                                     </Divider>
-                                    <form onSubmit={handleSubmit}>
-                                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around', flexWrap: 'wrap', m: 2 }}>
-                                            <DisplayTemplate formDetails={formDetails} />
-                                        </Box>
-                                        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                                            <Button
-                                                onClick={handleBack}
-                                                sx={{ maxHeight: 40 }}
-                                                size="small"
-                                                variant="contained"
-                                                color="primary"
-                                            >
-                                                Go Back
-                                            </Button>
-                                            <Box sx={{ flex: '1 1 auto' }} />
-                                            <Button
-                                                sx={{ maxHeight: 40 }}
-                                                size="small"
-                                                variant="contained"
-                                                color="primary"
-                                                type="submit">
-                                                Submit Form
-                                            </Button>
-                                        </Box>
-                                    </form>
+                                    <DisplayTemplate initialFormValue={initialFormValue} handleBack={handleBack} handleSubmit={handleSubmit} />
                                 </React.Fragment>) : (
                                 <React.Fragment>
                                     <br />
@@ -188,7 +236,54 @@ export default function DisplaySubmission(props) {
                 </React.Fragment>
             )}
 
-
+            <Dialog
+                open={dialogOpen}
+                keepMounted
+                onClose={handleDialogClose}
+                maxWidth='sm'
+                fullWidth
+            >
+                <DialogTitle>
+                    <Typography variant="h6" color="primary">
+                        SAVE PATTERN
+                    </Typography>
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        <Typography variant="subtitle1" sx={{ m: 1 }}>
+                            You have made the below changes :
+                        </Typography>
+                        <Typography variant="overline" sx={{ m: 1 }}>
+                            {fieldChanges}
+                        </Typography>
+                        <br />
+                        <br />
+                        <Typography variant="subtitle1" sx={{ m: 1 }}>
+                            Do you want to save it as a new pattern ?
+                        </Typography>
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        sx={{ maxHeight: 40, m: 1 }}
+                        size="small"
+                        variant="contained"
+                        color="primary"
+                        onClick={handleDialogClose}
+                    >
+                        No
+                    </Button>
+                    <Button
+                        sx={{ maxHeight: 40, m: 1 }}
+                        size="small"
+                        variant="contained"
+                        color="primary"
+                        onClick={handleSubmitPattern}
+                    >
+                        Yes
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 }

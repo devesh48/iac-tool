@@ -7,14 +7,19 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 import { insertToArray } from '../../../configs/utils';
 
 export default function DisplayTemplate(props) {
-    const { formDetails } = props;
+    const { initialFormValue, handleBack, handleSubmit } = props;
     const [expanded, setExpanded] = React.useState(false);
+    const [formValue, setFormValue] = React.useState(initialFormValue);
+    const [fieldsAddedCount, setFieldsAddedCount] = React.useState(0);
+    const [fieldsRemovedCount, setFieldsRemovedCount] = React.useState(0);
 
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
@@ -25,25 +30,35 @@ export default function DisplayTemplate(props) {
     }
 
     const handleAddSameField = (tempName, field) => {
-        //console.log("Field to be added");
-        //console.log(field);
-        let templateDetails = formDetails.templateDetails;
+        console.log("Field to be added");
+        console.log(field);
+        let templateDetails = initialFormValue.templateDetails;
         templateDetails.forEach(subForm => {
             if (subForm.templateName === tempName) {
                 let fieldsArray = subForm.templateInputDetails;
                 let index = fieldsArray.findIndex((obj) => obj.name === field.name);
                 if (index > -1) {
+                    let seqNo = field.sequenceNo;
+                    seqNo++;
+                    field.sequenceNo = seqNo;
+                    console.log(field);
+                    console.log(fieldsArray);
                     fieldsArray = insertToArray(fieldsArray, index, field);
+                    console.log(fieldsArray);
                     subForm.templateInputDetails = fieldsArray;
                 }
             }
         });
+        initialFormValue.templateDetails = templateDetails;
+        let addedCount = fieldsAddedCount;
+        addedCount++;
+        setFieldsAddedCount(addedCount);
     }
 
     const handleRemoveSameField = (tempName, field) => {
         //console.log("Field to be added");
         //console.log(field);
-        let templateDetails = formDetails.templateDetails;
+        let templateDetails = initialFormValue.templateDetails;
         templateDetails.forEach(subForm => {
             if (subForm.templateName === tempName) {
                 let fieldsArray = subForm.templateInputDetails;
@@ -54,55 +69,86 @@ export default function DisplayTemplate(props) {
                 }
             }
         });
+        initialFormValue.templateDetails = templateDetails;
+        let removedCount = fieldsRemovedCount;
+        removedCount++;
+        setFieldsRemovedCount(removedCount);
+        let addedCount = fieldsAddedCount;
+        addedCount--;
+        setFieldsAddedCount(addedCount);
     }
 
     return (
-        <React.Fragment>
-            {typeof formDetails.templateDetails !== 'undefined' && formDetails.templateDetails.map((subForm) => {
-                return (
-                    <React.Fragment>
-                        <Accordion expanded={expanded === subForm.templateName} onChange={handleChange(subForm.templateName)} sx={{ width: '80%' }}>
-                            <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel1bh-content"
-                                id="panel1bh-header"
-                            >
-                                <Typography variant="overline" align="center" color="primary">
-                                    {subForm.templateName}
-                                </Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                {subForm.templateInputDetails.map((field) => {
-                                    return (<React.Fragment>
-                                        <Stack direction="row" spacing={1}>
-                                            <Typography variant="overline" color="primary" sx={{ minWidth: 200, m: 1 }}>
-                                                {field.label}
-                                            </Typography>
-                                            <DisplayField field={field} handleInput={handleInput} />
-                                            {(typeof field.required !== 'undefined') && (field.required.toUpperCase() === 'YES') ? (
-                                                <React.Fragment>
-                                                    <AddBoxIcon
-                                                        fontSize="large"
-                                                        color="success"
-                                                        onClick={() => handleAddSameField(subForm.templateName, field)}
-                                                    />
-                                                    <IndeterminateCheckBoxIcon
-                                                        fontSize="large"
-                                                        sx={{ color: '#CC0000' }}
-                                                        onClick={() => handleRemoveSameField(subForm.templateName, field)} />
-                                                </React.Fragment>) : (
-                                                <React.Fragment>
-                                                </React.Fragment>)}
+        <Box>
+            <form>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around', flexWrap: 'wrap', m: 2 }}>
+                    {typeof formValue.templateDetails !== 'undefined' && formValue.templateDetails.map((subForm) => {
+                        return (
+                            <React.Fragment>
+                                <Accordion expanded={expanded === subForm.templateName} onChange={handleChange(subForm.templateName)} sx={{ width: '80%' }}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel1bh-content"
+                                        id="panel1bh-header"
+                                    >
+                                        <Typography variant="overline" align="center" color="primary">
+                                            {subForm.templateName}
+                                        </Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        {subForm.templateInputDetails.map((field) => {
+                                            return (<React.Fragment>
+                                                <Stack direction="row" spacing={1}>
+                                                    <Typography variant="overline" color="primary" sx={{ minWidth: 200, m: 1 }}>
+                                                        {field.label} : {field.sequenceNo}
+                                                    </Typography>
+                                                    <DisplayField field={field} handleInput={handleInput} />
+                                                    {(typeof field.required !== 'undefined') && (field.required.toUpperCase() === 'YES') ? (
+                                                        <React.Fragment>
+                                                            <AddBoxIcon
+                                                                fontSize="large"
+                                                                color="success"
+                                                                onClick={() => handleAddSameField(subForm.templateName, field)}
+                                                            />
+                                                            <IndeterminateCheckBoxIcon
+                                                                fontSize="large"
+                                                                sx={{ color: '#CC0000' }}
+                                                                onClick={() => handleRemoveSameField(subForm.templateName, field)} />
+                                                        </React.Fragment>) : (
+                                                        <React.Fragment>
+                                                        </React.Fragment>)}
 
-                                        </Stack>
-                                    </React.Fragment>)
-                                })}
-                            </AccordionDetails>
-                        </Accordion>
-                    </React.Fragment>
-                );
-            })}
-        </React.Fragment>
+                                                </Stack>
+                                            </React.Fragment>)
+                                        })}
+                                    </AccordionDetails>
+                                </Accordion>
+                            </React.Fragment>
+                        );
+                    })}
+                </Box>
+            </form>
+            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                <Button
+                    onClick={handleBack}
+                    sx={{ maxHeight: 40 }}
+                    size="small"
+                    variant="contained"
+                    color="primary"
+                >
+                    Go Back
+                </Button>
+                <Box sx={{ flex: '1 1 auto' }} />
+                <Button
+                    sx={{ maxHeight: 40 }}
+                    size="small"
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleSubmit(formValue, fieldsAddedCount, fieldsRemovedCount)}>
+                    Submit Form
+                </Button>
+            </Box>
+        </Box>
     );
 }
 

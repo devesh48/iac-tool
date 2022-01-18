@@ -1,31 +1,5 @@
 import { defaultTemplate } from './templates/defaultTemplates';
 
-export const fetchFormFieldsForTemplate = (pattern, templateName) => {
-    /*
-    console.log('In Utils, defaultTemplates size:' + defaultTemplates.length);
-    console.log('pattern sent:' + pattern);
-    console.log('templateName sent:' + templateName);
-    console.log('========');
-    */
-    let newArray = [];
-    if (defaultTemplate && defaultTemplate.length > 0) {
-        defaultTemplate.forEach(template => {
-            //check if pattern is the same
-            /*
-            console.log('========');
-            console.log('pattern:' + template.patternName);
-            console.log('templateName:' + template.templateName);
-            */
-            if ((template.patternName === pattern) && template.templateName === templateName) {
-                newArray = template.templateDetails;
-            }
-        });
-        return newArray;
-    } else {
-        return newArray;
-    }
-}
-
 export const getTemplatesForPattern = (pattern) => {
     let newArray = [];
     if (defaultTemplate && defaultTemplate.length > 0) {
@@ -77,5 +51,17 @@ export const getInitialValue = (pattern, temp) => {
     });
     return initObj;
 
+}
+
+export const getDefaultPatterns = () => {
+    let newArray = [];
+    if (defaultTemplate && defaultTemplate.length > 0) {
+        defaultTemplate.forEach(obj => {
+            newArray.push(obj.patternName);
+        });
+        return newArray;
+    } else {
+        return newArray;
+    }
 }
 

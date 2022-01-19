@@ -8,6 +8,8 @@ import Box from '@mui/material/Box';
 import Dashboard from './pages/dashboard/Dashboard';
 import DisplaySubmission from './pages/new-submission/DisplaySubmission';
 import NewPattern from './pages/new-pattern/NewPattern';
+import axios from 'axios';
+
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -45,10 +47,25 @@ function a11yProps(index) {
 
 export default function DisplayContent() {
     const [value, setValue] = React.useState(0);
+    const [config, setConfig] = React.useState('');
 
     const handleTabsChange = (event, newValue) => {
         setValue(newValue);
     };
+
+    React.useEffect(() => {
+        axios.get('https://iac-tool.herokuapp.com/loadAllConfig')
+            .then(res => {
+                if (res.data.length > 0) {
+                    setConfig(res.data);
+                }
+                console.log("Fetched all config successfully");
+            })
+            .catch(err => {
+                console.log("Failed to fetch config details");
+                console.log(err);
+            });
+    }, []);
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -63,10 +80,10 @@ export default function DisplayContent() {
                 <Dashboard />
             </TabPanel >
             <TabPanel value={value} index={1}>
-                <DisplaySubmission />
+                <DisplaySubmission config={config} />
             </TabPanel>
             <TabPanel value={value} index={2}>
-                <NewPattern />
+                <NewPattern config={config} />
             </TabPanel>
         </Box >
     );

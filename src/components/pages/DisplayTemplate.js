@@ -99,8 +99,8 @@ export default function DisplayTemplate(props) {
     }
 
     const handleAddSameField = (field) => {
-        //console.log("Field to be added");
-        //console.log(field);
+        console.log("Field to be added");
+        console.log(field);
         let existingConfig = config;
         let index = existingConfig.findIndex((obj) => obj.name === field.name);
         //console.log('index:' + index);
@@ -190,7 +190,7 @@ export default function DisplayTemplate(props) {
                             color="primary"
                             onClick={props.handleFinish}
                         >
-                            Submit
+                            Submit1
                         </Button>
                     </React.Fragment>
                 ) : (

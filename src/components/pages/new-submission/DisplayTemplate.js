@@ -9,6 +9,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import { useAlert } from "react-alert";
 
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
@@ -28,10 +29,24 @@ export default function DisplayTemplate(props) {
     const handleInput = (field, value) => {
         field.value = value;
     }
+    const alert = useAlert();
+    const validateFormValue = (formValue) => {
+        console.log(formValue);
+        var flag = true;
+        var formData = formValue['templateDetails'];
+        for (var i=0; i<formData.length; i++){
+            var tempData = formData[i].templateInputDetails;
+            for (var j=0; j<tempData.length; j++){
+                if (tempData[j].required && tempData[j].required === 'yes' && (tempData[j].value === '' || !tempData[j].value )){
+                    flag = false;
+                    return flag;
+                }
+            }
+        }
+        return flag;
+    }
 
     const handleAddSameField = (tempName, field) => {
-        console.log("Field to be added");
-        console.log(field);
         let templateDetails = initialFormValue.templateDetails;
         templateDetails.forEach(subForm => {
             if (subForm.templateName === tempName) {
@@ -39,12 +54,11 @@ export default function DisplayTemplate(props) {
                 let index = fieldsArray.findIndex((obj) => obj.name === field.name);
                 if (index > -1) {
                     let seqNo = field.sequenceNo;
-                    seqNo++;
-                    field.sequenceNo = seqNo;
-                    console.log(field);
-                    console.log(fieldsArray);
-                    fieldsArray = insertToArray(fieldsArray, index, field);
-                    console.log(fieldsArray);
+                    let newField = Object.create(field);
+                    newField.sequenceNo = seqNo + 1;
+                    newField.required = 'no';
+                    fieldsArray = insertToArray(fieldsArray, index+1, newField);
+                    field.required = 'yes';
                     subForm.templateInputDetails = fieldsArray;
                 }
             }
@@ -56,15 +70,13 @@ export default function DisplayTemplate(props) {
     }
 
     const handleRemoveSameField = (tempName, field) => {
-        //console.log("Field to be added");
-        //console.log(field);
         let templateDetails = initialFormValue.templateDetails;
         templateDetails.forEach(subForm => {
             if (subForm.templateName === tempName) {
                 let fieldsArray = subForm.templateInputDetails;
                 let index = fieldsArray.findIndex((obj) => obj.name === field.name);
-                if (index > -1) {
-                    fieldsArray.splice(index, 1);
+                if (index > -1 && fieldsArray[index+1].required === 'no') {
+                    fieldsArray.splice(index+1, 1);
                     subForm.templateInputDetails = fieldsArray;
                 }
             }
@@ -73,10 +85,16 @@ export default function DisplayTemplate(props) {
         let removedCount = fieldsRemovedCount;
         removedCount++;
         setFieldsRemovedCount(removedCount);
+        /*
         let addedCount = fieldsAddedCount;
         addedCount--;
         setFieldsAddedCount(addedCount);
+        */
     }
+
+    React.useEffect(() => {
+        setFormValue(initialFormValue);
+    }, [initialFormValue]);
 
     return (
         <Box>
@@ -91,16 +109,16 @@ export default function DisplayTemplate(props) {
                                         aria-controls="panel1bh-content"
                                         id="panel1bh-header"
                                     >
-                                        <Typography variant="overline" align="center" color="primary">
-                                            {subForm.templateName}
+                                        <Typography variant="subtitle2" align="center" color="primary">
+                                            {subForm.templateName.toUpperCase()}
                                         </Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>
                                         {subForm.templateInputDetails.map((field) => {
                                             return (<React.Fragment>
                                                 <Stack direction="row" spacing={1}>
-                                                    <Typography variant="overline" color="primary" sx={{ minWidth: 200, m: 1 }}>
-                                                        {field.label} : {field.sequenceNo}
+                                                    <Typography variant="overline" sx={{ minWidth: 200, m: 1 }}>
+                                                        {field.label}
                                                     </Typography>
                                                     <DisplayField field={field} handleInput={handleInput} />
                                                     {(typeof field.required !== 'undefined') && (field.required.toUpperCase() === 'YES') ? (
@@ -144,7 +162,15 @@ export default function DisplayTemplate(props) {
                     size="small"
                     variant="contained"
                     color="primary"
-                    onClick={() => handleSubmit(formValue, fieldsAddedCount, fieldsRemovedCount)}>
+                    onClick={() => {
+                        var result = validateFormValue(formValue);
+                        if (result){
+                            alert.success("Data Submitted successfully!");
+                            handleSubmit(formValue, fieldsAddedCount, fieldsRemovedCount);
+                        } else {
+                            alert.error("Please fill mandatory Fields!");
+                        }
+                    }}>
                     Submit Form
                 </Button>
             </Box>
@@ -164,6 +190,7 @@ function DisplayField(props) {
                         variant="outlined"
                         size="small"
                         sx={{ maxWidth: 300 }}
+                        required={(typeof field.required !== 'undefined') && (field.required.toUpperCase() === 'YES')}
                     />
                 </React.Fragment>
             );
@@ -172,13 +199,12 @@ function DisplayField(props) {
                 <React.Fragment>
                     <TextField
                         name={field.name}
-                        value={field.value}
                         onInput={e => handleInput(field, e.target.value)}
                         variant="outlined"
                         size="small"
                         multiline
                         rows={2}
-                        sx={{ minWidth: 300 }}
+                        sx={{ minWidth: 300, pb: 1 }}
                     />
                 </React.Fragment>
             );
@@ -189,10 +215,11 @@ function DisplayField(props) {
                         variant="outlined"
                         size="small"
                         select
-                        sx={{ maxWidth: 300 }}
+                        onChange={e => handleInput(field, e.target.value)}
+                        sx={{ maxWidth: 300, mt: 1 }}
                         fullWidth>
                         {field.values.length > 0 && field.values.map((option, index) => (
-                            <MenuItem key={index}>
+                            <MenuItem key={index} value = {option.value}>
                                 {option.value}
                             </MenuItem>
                         ))}

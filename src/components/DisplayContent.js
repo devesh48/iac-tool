@@ -10,7 +10,6 @@ import DisplaySubmission from './pages/new-submission/DisplaySubmission';
 import NewPattern from './pages/new-pattern/NewPattern';
 import axios from 'axios';
 
-
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 

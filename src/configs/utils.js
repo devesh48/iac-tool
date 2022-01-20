@@ -41,7 +41,7 @@ export const getInitialFormValue = (pattern, temp) => {
 
         let inputDetails = subForm.templateInputDetails;
         inputDetails.forEach(field => {
-            field.value = '';
+            // field.value = ;
             objOrig.templateInputDetails.push(field);
         });
         initObj.templateDetails.push(objOrig);

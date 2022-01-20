@@ -31,7 +31,6 @@ export default function DisplayTemplate(props) {
     }
     const alert = useAlert();
     const validateFormValue = (formValue) => {
-        console.log(formValue);
         var flag = true;
         var formData = formValue['templateDetails'];
         for (var i=0; i<formData.length; i++){
@@ -85,11 +84,6 @@ export default function DisplayTemplate(props) {
         let removedCount = fieldsRemovedCount;
         removedCount++;
         setFieldsRemovedCount(removedCount);
-        /*
-        let addedCount = fieldsAddedCount;
-        addedCount--;
-        setFieldsAddedCount(addedCount);
-        */
     }
 
     React.useEffect(() => {
@@ -190,6 +184,7 @@ function DisplayField(props) {
                         variant="outlined"
                         size="small"
                         sx={{ maxWidth: 300 }}
+                        defaultValue={field.value}
                         required={(typeof field.required !== 'undefined') && (field.required.toUpperCase() === 'YES')}
                     />
                 </React.Fragment>

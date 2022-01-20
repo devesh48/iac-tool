@@ -24,16 +24,18 @@ import axios from 'axios';
 import { Provider as AlertProvider } from 'react-alert'
 import AlertTemplate from 'react-alert-template-basic'
 
+const STATE_KEY = "submissionId";
+const NAVIGATE_KEY = "NAVIGATE_KEY";
+const RENDER_KEY = "RENDER_KEY";
 
 export default function DisplaySubmission(props) {
 
     const { config } = props;
-
     const [pattern, setPattern] = React.useState('');
     const [defaultPatterns, setDefaultPatterns] = React.useState([]);
     const [initialFormValue, setInitialFormValue] = React.useState({});
     const [activeStep, setActiveStep] = React.useState(0);
-    const [page, setPage] = React.useState(1);
+    const [page, setPage] = React.useState(0);
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [fieldChanges, setFieldChanges] = React.useState('');
     const [newSubmissionSaved, setNewSubmissionSaved] = React.useState(false);
@@ -47,7 +49,7 @@ export default function DisplaySubmission(props) {
         timeout: 5000,
         offset: '30px',
         transition: 'scale'
-      }
+    }
 
     const handleChangePattern = (pat) => {
         let temp = getTemplatesForPattern(config, pat);
@@ -117,11 +119,21 @@ export default function DisplaySubmission(props) {
         setDialogOpen(false);
     }
 
+    const [editSubmission, setEditSubmission] = React.useState(false);
     React.useEffect(() => {
         let patterns = getDefaultPatterns(config);
         setDefaultPatterns(patterns);
+
     }, [config]);
 
+    React.useEffect(() => {
+
+        if (sessionStorage.getItem(NAVIGATE_KEY)) {
+            setEditSubmission(sessionStorage.getItem(NAVIGATE_KEY));
+            sessionStorage.setItem(NAVIGATE_KEY, false);
+
+        }
+    }, []);
     return (
         <Box sx={{ width: '100%' }}>
             <Stepper activeStep={activeStep} sx={{ mb: 1 }}>
@@ -139,6 +151,18 @@ export default function DisplaySubmission(props) {
                     );
                 })}
             </Stepper>
+            <div>
+            </div>
+            {editSubmission ? (
+                <React.Fragment>
+                    <center>
+                        <br />
+                    </center>
+                </React.Fragment>
+            ) : (
+                <React.Fragment>
+                </React.Fragment>
+            )}
             {activeStep === stages.length ? (
                 <React.Fragment>
                     <center>
@@ -222,7 +246,7 @@ export default function DisplaySubmission(props) {
                                         </Typography>
                                     </Divider>
                                     <AlertProvider template={AlertTemplate} {...options}>
-                                    <DisplayTemplate initialFormValue={initialFormValue} handleBack={handleBack} handleSubmit={handleSubmit} />
+                                        <DisplayTemplate initialFormValue={initialFormValue} handleBack={handleBack} handleSubmit={handleSubmit} />
                                     </AlertProvider>
                                 </React.Fragment>) : (
                                 <React.Fragment>

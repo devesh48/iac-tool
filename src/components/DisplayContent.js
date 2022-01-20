@@ -43,19 +43,40 @@ function a11yProps(index) {
         'aria-controls': `simple-tabpanel-${index}`,
     };
 }
+const STATE_KEY = "sohel";
+sessionStorage.setItem(STATE_KEY, 0);
 
 export default function DisplayContent() {
     const [value, setValue] = React.useState(0);
-    const [config, setConfig] = React.useState('');
-
+    const [flag, setFlag] = React.useState(false);
+    const [config, setConfig] = React.useState({});
+    //var [inProgressData, setInProgressData] = React.useState({});
     const handleTabsChange = (event, newValue) => {
         setValue(newValue);
     };
+    React.useEffect(() => {
+        sessionStorage.setItem(STATE_KEY, value);
+        sessionStorage.getItem('submissionId');
+    }, [value]);
+
+
 
     React.useEffect(() => {
-        axios.get('https://iac-tool.herokuapp.com/loadAllConfig')
+        if (sessionStorage.getItem('submissionId') && flag){
+            axios.get('http://localhost:3001/getStoredProjectConfig/' + sessionStorage.getItem('submissionId'))
+            .then(res => {
+                setConfig(res.data);
+            })
+            .catch(err => {
+                console.log("Failed to fetch config details");
+                console.log(err);
+            })
+
+        } else {
+            axios.get('https://iac-tool.herokuapp.com/loadAllConfig')
             .then(res => {
                 if (res.data.length > 0) {
+                    console.log(res.data)
                     setConfig(res.data);
                 }
                 console.log("Fetched all config successfully");
@@ -64,7 +85,10 @@ export default function DisplayContent() {
                 console.log("Failed to fetch config details");
                 console.log(err);
             });
-    }, []);
+
+        }
+            
+    }, [value]);
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -76,7 +100,11 @@ export default function DisplayContent() {
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
-                <Dashboard />
+                <Dashboard handleClick={(a, b) => {
+                    setConfig(b);
+                    setValue(a);
+                    setFlag(true);
+                }} />
             </TabPanel >
             <TabPanel value={value} index={1}>
                 <DisplaySubmission config={config} />

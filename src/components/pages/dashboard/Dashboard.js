@@ -8,6 +8,8 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import DisplaySubmission from '../new-submission/DisplaySubmission';
+
 
 import axios from 'axios';
 
@@ -18,10 +20,21 @@ const columns = [
     'Data Classification'
 ]
 var projectSubmissionData = [];
-const redirectToNewSubmission = () => {
-    console.log('hello')
-}
-function TableComponent() {
+const STATE_KEY = "submissionId";
+const NAVIGATE_KEY = "NAVIGATE_KEY";
+const RENDER_KEY = "RENDER_KEY";
+var data = {};
+function TableComponent({ handleClick }) {
+    const [value, setValue] = React.useState(parseInt(sessionStorage.getItem(STATE_KEY)));
+    var [configNew, setConfigNew] = React.useState({});
+    sessionStorage.setItem(NAVIGATE_KEY, false);
+    const redirectToNewSubmission = (submissionId) => {
+        sessionStorage.setItem(STATE_KEY, submissionId);
+        sessionStorage.setItem(RENDER_KEY, true);
+        sessionStorage.setItem(NAVIGATE_KEY, true);
+        // https://iac-tool.herokuapp.com/loadAllConfig
+        // 'http://localhost:3001/getStoredProjectConfig/' + submissionId
+    }
     return (
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} size="small">
@@ -43,7 +56,7 @@ function TableComponent() {
                         })}
                         <TableCell key={'status'} sx={{ borderColor: "#460074" }}>
                             <Typography variant="overline" align="center" color="primary">
-                                Id
+                                ID
                             </Typography>
                         </TableCell>
                     </TableRow>
@@ -85,10 +98,13 @@ function TableComponent() {
                                     size="small"
                                     variant="contained"
                                     color="success"
-                                    onClick={() => redirectToNewSubmission()}
-                                >
-                                    {submission._id}
-                                </Button>
+                                    onClick={() => {
+                                        redirectToNewSubmission(submission._id);
+                                        console.log('----------------------')
+                                        console.log(data)
+                                        handleClick(1,data);
+                                    }}
+                                >{submission._id}</Button>
                             </TableCell>
                         </TableRow>);
                     })}
@@ -100,7 +116,7 @@ function TableComponent() {
 }
 
 
-export default function Dashboard() {
+export default function Dashboard({ handleClick }) {
     const [config, setConfig] = React.useState('');
 
 
@@ -121,12 +137,10 @@ export default function Dashboard() {
                                 if (res.data[j].templateDetails[k].templateName === "Project Information") {
 
                                     for (var x = 0; x < res.data[j].templateDetails[k].templateInputDetails.length; x++) {
-                                        console.log("res.data[k11]")
                                         if (res.data[j].templateDetails[k].templateInputDetails[x].name === "gitRepoURL")
                                             gitlabUrl = res.data[j].templateDetails[k].templateInputDetails[x].value
                                         if (res.data[j].templateDetails[k].templateInputDetails[x].name === "lob") {
                                             lob = res.data[j].templateDetails[k].templateInputDetails[x].value
-                                            console.log("lob", lob)
                                         }
                                         if (res.data[j].templateDetails[k].templateInputDetails[x].name === "owner1")
                                             owner1 = res.data[j].templateDetails[k].templateInputDetails[x].value
@@ -171,7 +185,7 @@ export default function Dashboard() {
             <Typography variant="subtitle1" align="center" color="primary">
                 SUBMISSIONS LIST
             </Typography>
-            <TableComponent />
+            <TableComponent handleClick={handleClick} />
         </React.Fragment>
     );
 }

@@ -4,7 +4,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
 
-export default function NavBar() {
+export default function GeneralForm() {
     return (
         <AppBar position="static" color="primary">
             <Toolbar>

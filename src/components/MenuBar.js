@@ -4,6 +4,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import DashBoard from './DashBoard';
 import NewPattern from './pattern/NewPattern';
+import Pipeline from './pipeline/Pipeline';
 
 function LinkTab(props) {
     return (
@@ -35,27 +36,19 @@ export default function MenuBar() {
             <Box sx={{ width: '100%' }}>
                 <Tabs value={value} onChange={handleChange} aria-label="nav tabs example">
                     <LinkTab label="Dashboard" href="/" />
-                    <LinkTab label="Create a new Pipeline" href="/submission" />
-                    <LinkTab label="Manage Patterns" href="/pattern" />
+                    <LinkTab label="Create a new Pipeline" href="/newpipeline" />
+                    <LinkTab label="Manage Patterns" href="/managepattern" />
                 </Tabs>
                 <TabPanel value={value} index={0}>
                     <DashBoard />
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                    <Submission />
+                    <Pipeline />
                 </TabPanel>
                 <TabPanel value={value} index={2}>
                     <NewPattern />
                 </TabPanel>
             </Box>
         </React.Fragment>
-    );
-}
-
-function Submission() {
-    return (
-        <div>
-            <h2>New Submission</h2>
-        </div>
     );
 }

@@ -11,9 +11,8 @@ export const awsTypes = [
 ]
 
 export const managePatternOptions = [
-    'Edit Pattern',
-    'Load & create a new pattern',
-    'Create a nonexistent pattern'
+    'Create a nonexistent pattern',
+    'Edit Pattern'
 ]
 
 export const defaultStepsToAddPattern = [

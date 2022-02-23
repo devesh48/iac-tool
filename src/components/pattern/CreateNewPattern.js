@@ -16,7 +16,7 @@ import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 
-
+import axios from 'axios';
 import { addFieldTypes, awsTypes } from '../../config/constants';
 import { getInputType } from '../../config/utils';
 import CNPForm from './CNPForm';
@@ -36,7 +36,8 @@ function Item(props) {
 }
 
 
-export default function CreateNewPattern() {
+export default function CreateNewPattern(props) {
+    let { setType } = props;
     const [patternName, setPatternName] = React.useState('');
     const [subFormName, setSubFormName] = React.useState('');
     const [fieldType, setFieldType] = React.useState('Text Box');
@@ -154,6 +155,24 @@ export default function CreateNewPattern() {
         //check patternName
         formJson['jsonTemplate'] = jsonTemplate;
         console.log(formJson);
+        axios.post('https://iac-tool.herokuapp.com/addNewPattern', formJson)
+            .then(res => {
+                console.log("Post request sent successfully to save new pattern");
+                if (res.status === "200" && res.data) {
+                    console.log(res.data);
+                }
+            })
+            .catch(err => {
+                console.log("Failed to send post request");
+                console.log(err);
+            })
+        handleReset();
+        setFormJson({
+            "patternName": "",
+            "templateDetails": [],
+            "jsonTemplate": {
+            }
+        })
     }
 
     return (
@@ -187,6 +206,8 @@ export default function CreateNewPattern() {
                         jsonTemplate={jsonTemplate}
                         setJSONTemplate={setJSONTemplate}
                         handleSubmit={handleSubmit}
+                        formJson={formJson}
+                        setType={setType}
                     />
                 </Item>
                 <Item
@@ -196,7 +217,7 @@ export default function CreateNewPattern() {
                     }}
                 >
                     {/* Add field form */}
-                    {(currentStep === 'General' || currentStep === 'Add JSON template') ? (
+                    {(typeof currentStep === 'undefined' || currentStep === 'General' || currentStep === 'Add JSON template') ? (
                         <React.Fragment>
                         </React.Fragment>
                     ) :
@@ -232,7 +253,7 @@ export default function CreateNewPattern() {
                                     </ListItem>
                                     <Divider sx={{ m: 1 }} />
                                     <ListItem key={'fieldName'}>
-                                        <Typography variant="overline" align="center" color="primary">
+                                        <Typography variant="overline" align="center" color="primary" sx={{ pb: 3 }}>
                                             Field Label
                                         </Typography>
                                         <TextField
@@ -241,7 +262,7 @@ export default function CreateNewPattern() {
                                             size="small"
                                             value={fieldName}
                                             onChange={handleFieldNameChange}
-                                            helperText={fieldName === '' ? 'Required' : ''}
+                                            helperText={fieldName === '' ? 'Required*' : 'Required*'}
                                             sx={{ maxWidth: 200, ml: 3 }}
                                         />
                                     </ListItem>

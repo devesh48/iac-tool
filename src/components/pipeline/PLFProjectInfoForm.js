@@ -3,12 +3,12 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 
-export default function CNPGeneralForm(props) {
+export default function PLFProjectInfoForm(props) {
     let {
-        patternName,
-        setPatternName,
-        subFormName,
-        setSubFormName
+        gitURL,
+        setGitURL,
+        gitToken,
+        setGitToken
     } = props;
     return (
         <React.Fragment>
@@ -20,17 +20,17 @@ export default function CNPGeneralForm(props) {
                 m: 1
             }}>
                 <Typography variant="overline" color="primary" sx={{ minWidth: 100, pb: 3 }}>
-                    Pattern Name
+                    Github URL
                 </Typography>
                 <TextField
                     variant="outlined"
                     size="small"
-                    sx={{ minWidth: 400, pl: 3, m: 1 }}
+                    sx={{ minWidth: 400, m: 1 }}
                     required
                     autoFocus
-                    value={patternName}
-                    helperText={patternName === '' ? 'Required*' : 'Required*'}
-                    onChange={(e) => setPatternName(e.target.value)}
+                    value={gitURL}
+                    helperText={'Required*'}
+                    onChange={(e) => setGitURL(e.target.value)}
                 />
             </Box>
             <Box sx={{
@@ -41,16 +41,17 @@ export default function CNPGeneralForm(props) {
                 m: 1,
             }}>
                 <Typography variant="overline" color="primary" sx={{ minWidth: 100, pb: 3 }}>
-                    Sub Form Names
+                    Github Token
                 </Typography>
                 <TextField
                     variant="outlined"
                     size="small"
-                    sx={{ minWidth: 400, pl: 1, m: 1 }}
+                    sx={{ minWidth: 400, m: 1 }}
                     required
-                    value={subFormName}
-                    onChange={(e) => setSubFormName(e.target.value)}
-                    helperText={subFormName === '' ? 'Required*' : 'Enter Multiple values in CSV format'}
+                    value={gitToken}
+                    onChange={(e) => setGitToken(e.target.value)}
+                    helperText={'Required*'}
+                    type="password"
                 />
             </Box>
         </React.Fragment>

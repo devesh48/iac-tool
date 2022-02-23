@@ -19,7 +19,7 @@ export default function NewPattern() {
                 <React.Fragment>
                     <Divider>
                         <Typography variant="overline" color="primary">
-                            Choose from below
+                            Choose an option from below
                         </Typography>
                     </Divider>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around', flexWrap: 'wrap', m: 2 }}>
@@ -77,7 +77,7 @@ export default function NewPattern() {
                             {type}
                         </Typography>
                     </Divider>
-                    <CreateNewPattern />
+                    <CreateNewPattern setType={setType} />
                 </React.Fragment>
             ) : (
                 <React.Fragment>

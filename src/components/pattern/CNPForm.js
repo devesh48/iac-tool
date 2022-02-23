@@ -27,7 +27,9 @@ export default function CNPForm(props) {
         setCurrentStep,
         jsonTemplate,
         setJSONTemplate,
-        handleSubmit
+        handleSubmit,
+        formJson,
+        setType
     } = props;
     const [activeStep, setActiveStep] = React.useState(0);
     const [stepsArray, setStepsArray] = React.useState(defaultStepsToAddPattern);
@@ -55,7 +57,21 @@ export default function CNPForm(props) {
     };
 
     const handleBack = () => {
-        setCurrentStep(stepsArray[activeStep - 1]);
+        if (activeStep === 0)
+            setType('');
+
+        let templateName = stepsArray[activeStep - 1];
+        //handle getting previous fields Array
+        let tempFormJSON = formJson;
+        let templateArr = tempFormJSON['templateDetails'];
+        let index = templateArr.findIndex((obj) => obj.templateName === templateName);
+        if (index > -1) {
+            let templateObj = templateArr[index];
+            let fieldArr = templateObj['templateInputDetails'];
+            setFieldsArray(fieldArr);
+        }
+
+        setCurrentStep(templateName);
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
@@ -129,8 +145,8 @@ export default function CNPForm(props) {
                     />
                 </Box>
             </Box>
-            <Snackbar open={isAlert} autoHideDuration={5000} onClose={() => setIsAlert(false)}>
-                <Alert variant="outlined" severity="success" sx={{ maxWidth: 200 }}>
+            <Snackbar open={isAlert} autoHideDuration={7000} onClose={() => setIsAlert(false)}>
+                <Alert variant="outlined" severity="success" sx={{ maxWidth: 400 }}>
                     A new pattern is saved
                 </Alert>
             </Snackbar>

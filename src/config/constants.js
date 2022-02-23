@@ -20,3 +20,9 @@ export const defaultStepsToAddPattern = [
     'Add Meta Data',
     'Add JSON template'
 ]
+
+export const defaultStepsToAddSubmission = [
+    'General',
+    'Fill Form',
+    'Project Information'
+]

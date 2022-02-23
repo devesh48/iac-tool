@@ -36,8 +36,8 @@ export default function MenuBar() {
             <Box sx={{ width: '100%' }}>
                 <Tabs value={value} onChange={handleChange} aria-label="nav tabs example">
                     <LinkTab label="Dashboard" href="/" />
-                    <LinkTab label="Create a new Pipeline" href="/newpipeline" />
-                    <LinkTab label="Manage Patterns" href="/managepattern" />
+                    <LinkTab label="Create a new Pipeline" href="/createNewPipeline" />
+                    <LinkTab label="Manage Patterns" href="/managePattern" />
                 </Tabs>
                 <TabPanel value={value} index={0}>
                     <DashBoard />

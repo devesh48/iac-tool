@@ -21,8 +21,9 @@ export default function CNPJsonTemplateForm(props) {
                     required
                     autoFocus
                     multiline
-                    rows={10}
+                    rows={14}
                     value={jsonTemplate}
+                    helperText={jsonTemplate === '' ? 'Required*' : '  '}
                     onChange={(e) => setJSONTemplate(e.target.value)}
                 />
             </Box>

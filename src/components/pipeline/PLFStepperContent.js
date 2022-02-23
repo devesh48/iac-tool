@@ -1,30 +1,53 @@
 import * as React from 'react';
+import axios from 'axios';
+
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 
-import CNPGeneralForm from './CNPGeneralForm';
-import CNPJsonTemplateForm from './CNPJsonTemplateForm';
-import CNPDisplayFieldsArray from './CNPDisplayFieldsArray';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import PLFProjectInfoForm from './PLFProjectInfoForm';
+import PNFDisplayFieldsArray from './PNFDisplayFieldsArray';
 
-export default function CNPStepperContent(props) {
+export default function PLFStepperContent(props) {
     let {
         activeStep,
-        patternName,
-        setPatternName,
-        subFormName,
-        setSubFormName,
         stepsArray,
-        fieldsArray,
-        currentStep,
         handleNext,
         handleBack,
         handleReset,
-        handleRemoveField,
-        jsonTemplate,
-        setJSONTemplate
+        currentStep,
+        setCurrentStep,
+        patternNameSelected,
+        setPatternNameSelected,
+        patternDetails,
+        gitURL,
+        setGitURL,
+        gitToken,
+        setGitToken,
+        patternNameList,
+        getPatternDetail,
+        currPattern
     } = props;
+
+
+
+    const handlePatternChange = (event) => {
+        setPatternNameSelected(event.target.value);
+    };
+
+    const handleSelectChange = (event) => {
+        handlePatternChange(event);
+        getPatternDetail(event.target.value);
+    }
+
+    React.useEffect(() => {
+        //console.log(sessionStorage.getItem('sohel'));
+        setCurrentStep(stepsArray[0]);
+    }, [stepsArray.length]);
+
     return (
         <React.Fragment>
             <Box sx={{ flexDirection: 'column', alignContent: 'space-between' }}>
@@ -35,50 +58,55 @@ export default function CNPStepperContent(props) {
                         <React.Fragment>
                             <Divider sx={{ m: 2 }}>
                                 <Typography variant="overline" color="primary">
-                                    General details
+                                    Choose a pattern from below
                                 </Typography>
                             </Divider>
-                            <CNPGeneralForm
-                                patternName={patternName}
-                                setPatternName={setPatternName}
-                                subFormName={subFormName}
-                                setSubFormName={setSubFormName} />
+                            <Select
+                                defaultValue=""
+                                value={patternNameSelected}
+                                onChange={handleSelectChange}
+                                sx={{ maxHeight: 40, minWidth: 200, }}
+                            >
+                                {patternNameList.map((pat, index) => {
+                                    return (
+                                        <MenuItem key={index} value={pat} dense divider>
+                                            {pat}
+                                        </MenuItem>
+                                    );
+                                })}
+                            </Select>
+                        </React.Fragment>
+                    ) : (
+                        <React.Fragment>
+                        </React.Fragment>
+                    )}
+                    {(activeStep > 0 && (activeStep < stepsArray.length)) ? (
+                        <React.Fragment>
+                            <Divider sx={{ m: 2 }}>
+                                <Typography variant="overline" color="primary">
+                                    Fill below fields for subform : {stepsArray[activeStep]}
+                                </Typography>
+                            </Divider>
+                            <PNFDisplayFieldsArray currStep={stepsArray[activeStep]} currPattern={currPattern} />
                         </React.Fragment>
                     ) : (
                         <React.Fragment>
                         </React.Fragment>
                     )}
                     {/* Display last step */}
-                    {(currentStep === 'Add JSON template') ? (
+                    {(stepsArray[activeStep] === 'Project Information') ? (
                         <React.Fragment>
-                            <Divider sx={{ m: 2 }}>
-                                <Typography variant="overline" color="primary">
-                                    JSON template
-                                </Typography>
-                            </Divider>
-                            <CNPJsonTemplateForm
-                                jsonTemplate={jsonTemplate}
-                                setJSONTemplate={setJSONTemplate} />
+                            <PLFProjectInfoForm
+                                gitURL={gitURL}
+                                setGitURL={setGitURL}
+                                gitToken={gitToken}
+                                setGitToken={setGitToken} />
                         </React.Fragment>
                     ) : (
                         <React.Fragment>
                         </React.Fragment>
                     )}
-                    {/* Display fields added */}
-                    {(fieldsArray.length > 0) ? (
-                        <React.Fragment>
-                            <Divider sx={{ m: 2 }}>
-                                <Typography variant="overline" color="primary">
-                                    List of fields added for {currentStep}
-                                </Typography>
-                            </Divider>
-                            <CNPDisplayFieldsArray fieldsArray={fieldsArray} handleRemoveField={handleRemoveField} />
-                        </React.Fragment>
-                    ) : (
-                        <React.Fragment>
-                        </React.Fragment>
-                    )}
-                    {/* after last step or new pattern submission */}
+                    {/* after last step or new pipeline submission */}
                     {activeStep === stepsArray.length && (
                         <Button
                             onClick={handleReset}
@@ -86,7 +114,7 @@ export default function CNPStepperContent(props) {
                             size="small"
                             variant="contained"
                             color="primary">
-                            Create Another Pattern ?
+                            Create Another Pipeline ?
                         </Button>
                     )}
                 </Box>
@@ -107,6 +135,7 @@ export default function CNPStepperContent(props) {
                                     size="small"
                                     variant="contained"
                                     color="primary"
+                                    disabled={activeStep === 0}
                                 >
                                     Back
                                 </Button>
@@ -116,15 +145,25 @@ export default function CNPStepperContent(props) {
                                     size="small"
                                     variant="contained"
                                     color="primary"
-                                    disabled={(patternName === '' || subFormName === '')}
+                                    disabled={activeStep === 0}
                                 >
                                     {activeStep === stepsArray.length - 1 ? 'Save' : 'Next'}
+                                </Button>
+                                <Button
+
+                                    sx={{ maxHeight: 40, mt: 2, mr: 1 }}
+                                    size="small"
+                                    variant="contained"
+                                    color="primary"
+                                    disabled
+                                >
+                                    Submit
                                 </Button>
                             </Box>
                         </React.Fragment>
                     ) : (<React.Fragment></React.Fragment>)}
                 </Box>
             </Box>
-        </React.Fragment>
+        </React.Fragment >
     );
 }

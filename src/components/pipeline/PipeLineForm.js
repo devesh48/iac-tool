@@ -131,6 +131,7 @@ export default function PipeLineForm() {
     const handleSubmit = () => {
         currPattern['gitURL'] = gitURL;
         currPattern['gitToken'] = gitToken;
+        currPattern['processingIndexed'] = false;
         console.log(currPattern);
         axios.post('https://iac-tool.herokuapp.com/createNewPipeline', currPattern)
             .then(res => {

@@ -3,7 +3,7 @@ import axios from 'axios';
 import Typography from '@mui/material/Typography';
 import DashBoardTable from './DashBoardTable';
 
-export default function DashBoard() {
+function DashBoard() {
 
     const [pipeLineDetails, setPipeLineDetails] = React.useState([]);
 
@@ -40,3 +40,5 @@ export default function DashBoard() {
         </React.Fragment>
     );
 }
+
+export default DashBoard;

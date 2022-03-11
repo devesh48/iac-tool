@@ -8,7 +8,7 @@ export default function NavBar() {
     return (
         <AppBar position="static" color="primary">
             <Toolbar>
-                <Avatar variant="square" alt='A' src="/acc_logo4.svg" onClick={() => window.location.reload(false)} />
+                <Avatar variant="square" alt='A' src="/acc_logo2.svg" onClick={() => window.location.reload(false)} />
                 <Typography variant="subtitle1" noWrap component="div" sx={{ m: 2 }}>
                     ACCENTURE IAC TOOL
                 </Typography>

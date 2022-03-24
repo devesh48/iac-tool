@@ -2,7 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import DashBoard from './DashBoard';
+import DashBoard from './Dashboard';
 import NewPattern from './pattern/NewPattern';
 import NewPipeline from './pipeline/NewPipeline';
 

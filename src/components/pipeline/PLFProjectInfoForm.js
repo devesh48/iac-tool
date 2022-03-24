@@ -18,7 +18,7 @@ export default function PLFProjectInfoForm(props) {
     } = props;
     return (
         <React.Fragment>
-            <Box border={2}>
+            <Box>
                 <Box sx={{
                     display: 'flex',
                     justifyContent: 'flex-start',

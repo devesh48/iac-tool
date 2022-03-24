@@ -1,8 +1,7 @@
 import * as React from 'react';
-import Stack from '@mui/material/Stack';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import NavBar from './NavBar';
-import DisplayContent from './DisplayContent'
+import MenuBar from './MenuBar';
 
 const accIACTheme = createTheme({
     palette: {
@@ -14,11 +13,10 @@ const accIACTheme = createTheme({
 
 export default function HomePage() {
     return (
-        <Stack spacing={2} sx={{ flexGrow: 1 }}>
-            <ThemeProvider theme={accIACTheme}>
-                <NavBar />
-                <DisplayContent />
-            </ThemeProvider>
-        </Stack>
+        <ThemeProvider theme={accIACTheme}>
+            <NavBar />
+            <MenuBar />
+        </ThemeProvider >
     );
 }
+
